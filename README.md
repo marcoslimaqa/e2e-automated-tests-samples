@@ -20,7 +20,7 @@ Automated applications in this project
 -------------------
 
 * Web application: https://www.saucedemo.com
-* API: https://jsonplaceholder.typicode.com
+* API: https://restful-booker.herokuapp.com/apidoc
 * Desktop application: app\ProcessExplorer\procexp.exe
 
 Test Features
