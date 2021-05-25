@@ -3,15 +3,15 @@ package io.github.marcoslimaqa.util;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.ClassUtils;
 import org.apache.commons.lang3.reflect.FieldUtils;
+import org.apache.commons.lang3.reflect.MethodUtils;
 import org.apache.log4j.Logger;
 import org.junit.rules.TestWatcher;
 import org.junit.runner.Description;
@@ -33,10 +33,11 @@ import com.aventstack.extentreports.ExtentTest;
 import com.aventstack.extentreports.MediaEntityBuilder;
 import com.aventstack.extentreports.reporter.ExtentHtmlReporter;
 
+import io.cucumber.core.backend.TestCaseState;
 import io.cucumber.java.After;
 import io.cucumber.java.Before;
 import io.cucumber.java.Scenario;
-import io.cucumber.plugin.event.Result;
+import io.github.bonigarcia.wdm.WebDriverManager;
 import io.github.marcoslimaqa.pages.BasePage;
 
 public class TestRule extends TestWatcher {
@@ -135,27 +136,19 @@ public class TestRule extends TestWatcher {
 	}
 	
 	private Throwable logError(Scenario scenario) {
+		Field field = FieldUtils.getField(Scenario.class, "delegate", true);
+		Method getError = null;
 	    try {
-	        @SuppressWarnings("rawtypes")
-			Class clasz = ClassUtils.getClass("cucumber.runtime.java.JavaHookDefinition$ScenarioAdaptor");
-	        Field fieldScenario = FieldUtils.getField(clasz, "scenario", true);
-	        fieldScenario.setAccessible(true);
-	        Object objectScenario =  fieldScenario.get(scenario);
-
-	        Field fieldStepResults = objectScenario.getClass().getDeclaredField("stepResults");
-	        fieldStepResults.setAccessible(true);
-
-	        @SuppressWarnings("unchecked")
-			ArrayList<Result> results = (ArrayList<Result>) fieldStepResults.get(objectScenario);
-	        for (Result result : results) {
-	            if (result.getError() != null) {
-	                return result.getError();
-	            }
+	        final TestCaseState testCase = (TestCaseState) field.get(scenario);
+	        if (getError == null) {
+	            getError = MethodUtils.getMatchingMethod(testCase.getClass(), "getError");
+	            getError.setAccessible(true);
 	        }
+	        return (Throwable) getError.invoke(testCase);
 	    } catch (Exception e) {
-	    	return e;
+	    	System.err.println("error receiving exception" + e);
 	    }
-		return null;
+	    return null;
 	}
 	
 	@Override
@@ -227,10 +220,8 @@ public class TestRule extends TestWatcher {
 		DesiredCapabilities capabilities = DesiredCapabilities.chrome();
 		capabilities.setCapability(CapabilityType.UNEXPECTED_ALERT_BEHAVIOUR, 
 				   UnexpectedAlertBehaviour.ACCEPT);
-		if (System.getProperty("os.name").contains("Windows")) {
-			System.setProperty("webdriver.chrome.driver", "src/test/resources/drivers/chromedriver.exe");
-		}
 		capabilities.setCapability(ChromeOptions.CAPABILITY, options);
+		WebDriverManager.chromedriver().setup();
 		driver = new ChromeDriver(capabilities);
 		driver.manage().window().maximize();
 		driver.navigate().to(url);

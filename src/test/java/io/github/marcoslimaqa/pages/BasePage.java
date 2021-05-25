@@ -636,13 +636,6 @@ public class BasePage {
 		sikuli.keyUp();
 	}
 
-	public void closeArya(String windowTitle) {
-//		waitWindow(windowTitle, 5);
-		sikuli.keyDown(Key.CTRL);
-		sikuli.type("q");
-		sikuli.keyUp();
-	}
-
 	public void closeWindow(String windowTitle) {
 		waitWindow(windowTitle, 5);
 		App.close(windowTitle);
@@ -823,13 +816,6 @@ public class BasePage {
 		return getClipboard();
 	}
 
-	public boolean dadosTabelaAryaEstaoCorretos(List<List<String>> dadosEsperados) {
-		logInfo("Inicio da validacao da tabela");
-		sikuli.type("c", Key.CTRL + Key.SHIFT + Key.ALT);
-		List<List<String>> tabelaRetornada = csvToDataTable(getClipboard(), "	");
-		return areDataTablesEquals(tabelaRetornada, dadosEsperados);
-	}
-
 	public List<List<String>> csvToDataTable(String csv, String separator) {
 		List<List<String>> dataTable = new ArrayList<List<String>>();
 		List<String> lstLinhas = Arrays.asList(csv.split("\\r?\\n"));
@@ -866,75 +852,6 @@ public class BasePage {
 			}
 		}
 		return tabelasSaoIguais;
-	}
-	
-	protected void jmxConsoleExecute(String domain, String service) {
-		Utils.httpPost("http://pixadmin:8600@" + Utils.getTestProperty("pacs.server") + "/jmx-console/HtmlAdaptor", "action=invokeOp&name=" + domain + ":service=" + service + "&methodIndex=0");
-	}
-
-	/**
-	 * 
-	 * @param dataDesejada - Informe a data desejada em qualquer formato. Ex:
-	 *                     yyyyMMddHHmmss, yyyyMMddHHmm, yyyyMMdd.
-	 * @param formatoData  - Informe o formato desejado, que deverá ser o mesmo da
-	 *                     data passada no parâmetro anterior.
-	 * @return - O retorno é uma lista de String referente as linhas do log do Arya.
-	 * @throws ParseException
-	 * @throws IOException
-	 */
-	public List<String> retornarLogAryaAPartirDaDataInformada(String dataDesejada, String formatoData)
-			throws ParseException, IOException {
-		DateFormat inputFormat = new SimpleDateFormat(formatoData, Locale.US);
-		DateFormat outputFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
-
-		String inputText = dataDesejada;
-		Date date = inputFormat.parse(inputText);
-		String outputText = outputFormat.format(date);
-		String arquivo = retornarArquivoLogArya();
-
-		String[] linhasDoArquivo = arquivo.split(System.getProperty("line.separator"));
-		List<String> list = new ArrayList<String>(Arrays.asList(linhasDoArquivo));
-		List<String> arquivoDesejado = new ArrayList<String>();
-
-		for (String line : list) {
-			if (formatoData.length() == 12) {
-				if (line.contains(outputText.substring(0, 16))) {
-					arquivoDesejado.add(line);
-					System.out.println(line);
-				}
-
-			} else if (formatoData.length() == 10) {
-				if (line.contains(outputText.substring(0, 13))) {
-					arquivoDesejado.add(line);
-					System.out.println(line);
-				}
-
-			} else if (formatoData.length() == 8) {
-				if (line.contains(outputText.substring(0, 10))) {
-					arquivoDesejado.add(line);
-					System.out.println(line);
-				}
-
-			} else if (formatoData.length() == 6) {
-				if (line.contains(outputText.substring(0, 7))) {
-					arquivoDesejado.add(line);
-					System.out.println(line);
-				}
-
-			} else if (line.contains(outputText)) {
-				arquivoDesejado.add(line);
-				System.out.println(line);
-			}
-		}
-		System.out.println(arquivoDesejado);
-		return arquivoDesejado;
-	}
-
-	public String retornarArquivoLogArya() throws IOException {
-		String pathLog = System.getProperty("user.home") + "/pixviewerlogs/arya.log";
-		String arquivoLog = Utils.readFileToString(pathLog, StandardCharsets.UTF_8);
-
-		return arquivoLog;
 	}
 	
 	public boolean isImageEquals(String expectedImage, String resultImagePath) throws IOException {

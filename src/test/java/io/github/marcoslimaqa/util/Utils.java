@@ -452,10 +452,10 @@ public class Utils {
 			public java.security.cert.X509Certificate[] getAcceptedIssuers() {
 				return null;
 			}
-			@SuppressWarnings("unused")
+			@SuppressWarnings({ "unused", "deprecation" })
 			public void checkClientTrusted(X509Certificate[] certs, String authType) {
 			}
-			@SuppressWarnings("unused")
+			@SuppressWarnings({ "unused", "deprecation" })
 			public void checkServerTrusted(X509Certificate[] certs, String authType) {
 			}
 			@Override
