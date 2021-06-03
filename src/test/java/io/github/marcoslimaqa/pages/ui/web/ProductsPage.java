@@ -14,7 +14,7 @@ public class ProductsPage extends BasePage {
 	@FindBy(css = ".inventory_item")
 	private List<WebElement> products; 
 	
-	@FindBy(xpath = "//button[text()='ADD TO CART']")
+	@FindBy(xpath = "//button[text()='Add to cart']")
 	private List<WebElement> addToCartButtons;
 	
 	@FindBy(id = "shopping_cart_container")

@@ -266,8 +266,7 @@ public class TestRule extends TestWatcher {
 		options.addArguments("disable-infobars");
 		options.addArguments("--disable-print-preview");
 		
-		if (System.getProperty("os.name").contains("Windows")) 
-			System.setProperty("webdriver.chrome.driver", "src/test/resources/drivers/chromedriver.exe");
+		WebDriverManager.chromedriver().setup();
 			
 		Map<String, String> mobileEmulation = new HashMap<String, String>();
 		mobileEmulation.put("deviceName", "iPhone X");

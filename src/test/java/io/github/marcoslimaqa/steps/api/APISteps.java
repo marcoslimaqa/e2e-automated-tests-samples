@@ -103,6 +103,9 @@ public class APISteps extends BasePage {
 	@When("^method POST$")
 	public void post() {
 		response = when().post();
+		response.then().log().all(true);
+		logInfo("<pre>" + writer.toString() + "</pre>");
+		System.out.println(writer.toString());
 	}
 
 	@When("^method GET$")
@@ -116,16 +119,25 @@ public class APISteps extends BasePage {
 	@When("^method PUT$")
 	public void put() {
 		response = when().put();
+		response.then().log().all(true);
+		logInfo("<pre>" + writer.toString() + "</pre>");
+		System.out.println(writer.toString());
 	}
 	
 	@When("^method PATCH$")
 	public void patch() {
 		response = when().patch();
+		response.then().log().all(true);
+		logInfo("<pre>" + writer.toString() + "</pre>");
+		System.out.println(writer.toString());
 	}
 	
 	@When("^method DELETE$")
 	public void delete() {
 		response = when().delete();
+		response.then().log().all(true);
+		logInfo("<pre>" + writer.toString() + "</pre>");
+		System.out.println(writer.toString());
 	}
 	
 	private ValidatableResponse then() {

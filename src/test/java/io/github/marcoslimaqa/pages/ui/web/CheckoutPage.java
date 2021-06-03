@@ -18,10 +18,10 @@ public class CheckoutPage extends BasePage {
 	@FindBy(id = "postal-code")
 	private WebElement postalCodeText; 
 	
-	@FindBy(xpath = "//input[@value='CONTINUE']")
+	@FindBy(xpath = "//input[@value='Continue']")
 	private WebElement continueButton; 
 	
-	@FindBy(xpath = "//a[text()='FINISH']")
+	@FindBy(xpath = "//button[text()='Finish']")
 	private WebElement finishButton; 
 	
 	@FindBy(css = ".complete-header")
